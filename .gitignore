@@ -1,0 +1,9 @@
+packer_cache
+dist/
+iso/
+*.box
+output-*
+*.iso
+*.log
+.vagrant/
+

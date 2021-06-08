@@ -1,0 +1,57 @@
+{
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'",
+      "override": {
+        "virtualbox-iso": {
+          "scripts": [
+            "scripts/base.sh",
+            "scripts/vagrant.sh",
+            "scripts/virtualbox.sh",
+            "scripts/cleanup.sh"
+          ]
+        }
+      }
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "override": {
+        "virtualbox": {
+          "output": "dist/centos-7-x64-virtualbox.box",
+          "type": "vagrant",
+          "vagrantfile_template": "./Vagrantfile"
+        }
+      }
+    }
+  ],
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "boot_command": [
+        "<tab> text append net.ifnames=0 biosdevname=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
+      ],
+      "boot_wait": "10s",
+      "disk_size": 8192,
+      "guest_os_type": "RedHat_64",
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "sha256:07b94e6b1a0b0260b94c83d6bb76b26bf7a310dc78d7a9c7432809fb9bc6194a",
+      "iso_url": "iso/centOS-7-x64-minimal.iso",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "10000s",
+      "shutdown_command": "echo '/sbin/halt -h -p' > /tmp/shutdown.sh; echo 'vagrant'|sudo -S sh '/tmp/shutdown.sh'",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "1536" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "1" ]
+      ],
+      "vm_name": "CentOS-7"
+    }
+  ]
+}
