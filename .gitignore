@@ -1,4 +1,5 @@
 packer_cache
+.DS_Store
 dist/
 iso/
 *.box
